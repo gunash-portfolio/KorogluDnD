@@ -16,7 +16,12 @@
       #title {
         position: absolute; top: 16px; left: 20px; font-size: 22px; letter-spacing: 0.04em;
       }
-      #story { position: absolute; top: 48px; left: 20px; max-width: 420px; font-size: 14px; opacity: 0.9; }
+      #story { position: absolute; top: 48px; left: 20px; max-width: 440px; font-size: 14px; opacity: 0.95; line-height: 1.4; }
+      #who { position: absolute; bottom: 16px; right: 20px; font-size: 12px; text-align: right; max-width: 240px; opacity: 0.9; }
+      .nametag {
+        position: absolute; transform: translate(-50%, -100%);
+        font-size: 12px; white-space: nowrap; color: #fff4d4;
+      }
       #bars { position: absolute; top: 16px; right: 20px; width: 220px; }
       .bar-wrap { margin-bottom: 8px; }
       .label { font-size: 12px; margin-bottom: 3px; }
@@ -43,23 +48,24 @@
   <body>
     <div id="hud">
       <div id="title">Epic of Koroglu</div>
-      <div id="story">Your father was blinded by Bolu Bey. Ride with your ally. Rescue Nigar. Take Çamlıbel.</div>
+      <div id="story">Bolu Bey blinded your father for telling the truth. Ride close to the people of the valley. Hear them. Then fight for justice, not glory.</div>
       <div id="bars">
         <div class="bar-wrap"><div class="label">Koroglu</div><div class="bar"><div id="playerFill" class="fill"></div></div></div>
-        <div class="bar-wrap"><div class="label">Ally</div><div class="bar"><div id="allyFill" class="fill"></div></div></div>
-        <div class="bar-wrap"><div class="label">Bolu Bey’s Guard</div><div class="bar"><div id="enemyFill" class="fill"></div></div></div>
+        <div class="bar-wrap"><div class="label">Deli Hasan (ally)</div><div class="bar"><div id="allyFill" class="fill"></div></div></div>
+        <div class="bar-wrap"><div class="label">Captain of Bolu Bey</div><div class="bar"><div id="enemyFill" class="fill"></div></div></div>
       </div>
       <div id="help">
-        WASD / arrows — ride<br />
-        Space / click — sword<br />
-        P — recite a verse (poetry combat)
+        WASD / arrows — ride close to people to hear them<br />
+        Space / click — sword &nbsp;·&nbsp; P — recite a verse
       </div>
+      <div id="who">Ride near: Ali Kishi · Nigar · Ayvaz · the ashik</div>
+      <div id="nametags"></div>
     </div>
     <div id="banner">
       <div>
         <h1 id="bannerTitle"></h1>
         <p id="bannerText"></p>
-        <button id="restart">Ride again</button>
+        <button id="restart">Ride for justice</button>
       </div>
     </div>
     <script type="module" src="/src/main.js"></script>
