@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Koroglu — Çamlıbel Skirmish</title>
+    <style>
+      html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1208; }
+      canvas { display: block; }
+      #hud {
+        position: fixed; inset: 0; pointer-events: none;
+        font-family: Georgia, "Times New Roman", serif;
+        color: #f4e6c1;
+        text-shadow: 0 1px 4px #000;
+      }
+      #title {
+        position: absolute; top: 16px; left: 20px; font-size: 22px; letter-spacing: 0.04em;
+      }
+      #story { position: absolute; top: 48px; left: 20px; max-width: 420px; font-size: 14px; opacity: 0.9; }
+      #bars { position: absolute; top: 16px; right: 20px; width: 220px; }
+      .bar-wrap { margin-bottom: 8px; }
+      .label { font-size: 12px; margin-bottom: 3px; }
+      .bar { height: 10px; background: #3a2a18; border: 1px solid #c9a227; }
+      .fill { height: 100%; background: #c9a227; width: 100%; }
+      #enemyFill { background: #a33; }
+      #allyFill { background: #3a8; }
+      #help {
+        position: absolute; bottom: 16px; left: 20px; font-size: 13px; line-height: 1.45;
+      }
+      #banner {
+        position: absolute; inset: 0; display: none; align-items: center; justify-content: center;
+        background: rgba(10,6,2,0.72); pointer-events: auto; text-align: center;
+      }
+      #banner.show { display: flex; }
+      #banner h1 { font-size: 36px; margin: 0 0 12px; }
+      #banner p { max-width: 420px; }
+      button {
+        pointer-events: auto; margin-top: 16px; padding: 10px 18px;
+        background: #c9a227; border: none; font: inherit; cursor: pointer; color: #1a1208;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="hud">
+      <div id="title">Epic of Koroglu</div>
+      <div id="story">Your father was blinded by Bolu Bey. Ride with your ally. Rescue Nigar. Take Çamlıbel.</div>
+      <div id="bars">
+        <div class="bar-wrap"><div class="label">Koroglu</div><div class="bar"><div id="playerFill" class="fill"></div></div></div>
+        <div class="bar-wrap"><div class="label">Ally</div><div class="bar"><div id="allyFill" class="fill"></div></div></div>
+        <div class="bar-wrap"><div class="label">Bolu Bey’s Guard</div><div class="bar"><div id="enemyFill" class="fill"></div></div></div>
+      </div>
+      <div id="help">
+        WASD / arrows — ride<br />
+        Space / click — sword<br />
+        P — recite a verse (poetry combat)
+      </div>
+    </div>
+    <div id="banner">
+      <div>
+        <h1 id="bannerTitle"></h1>
+        <p id="bannerText"></p>
+        <button id="restart">Ride again</button>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
