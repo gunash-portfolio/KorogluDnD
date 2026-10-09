@@ -1,0 +1,54 @@
+---
+description: Governing product vision from KorogluEpicGameProposal.md — Three.js Koroglu epic game with AI agents
+alwaysApply: true
+---
+
+# Koroglu Epic Game — Project Rule
+
+Source of truth: `KorogluEpicGameProposal.md`. Treat it as the product brief for all design and implementation choices.
+
+## Product goal
+
+Build an interactive **Three.js** 3D game of the **Epic of Koroglu** (Turkic heritage), not a passive text retelling. Players learn culture through play, mounted combat, and moral choice.
+
+Canonical lore reference: https://en.wikipedia.org/wiki/Epic_of_Koroghlu
+
+## Core player loop (MVP narrative)
+
+1. Start: Koroglu’s father is blinded  
+2. Recruit ally AI agents  
+3. Mounted combat  
+4. Rescue Nigar from Bolu Bey  
+5. Capture Çamlıbel Fortress  
+
+Prefer shipping this arc in slices; do not invent a conflicting main plot without updating the proposal.
+
+## AI requirements
+
+- **Ally/enemy agents**: region-specific dialogue (Azerbaijani/Turkmen variants)  
+- **Adaptive combat AI**: responds to player style (sword vs poetry tactics)  
+- **Quest generation**: driven by player morality choices  
+- Prefer reactive AI (FSMs, adaptive behavior) over purely scripted sequences  
+
+## Signature mechanics to preserve
+
+- Mounted combat (including mounted archery balance)  
+- **Poetry combat**: recited verses demoralize enemies  
+- Player choices that branch **regional tale variations**  
+
+## Quality bar
+
+- Cultural accuracy: avoid anachronistic NPC dialogue; cross-check academic/epic sources before inventing lore  
+- Combat balance: tune hitboxes/physics deliberately  
+- Ally pathfinding and AI states must be debuggable (FSM-friendly design)  
+
+## Feasibility constraints (plan against these)
+
+- Assets: Turkic-themed models (horses, fortresses, etc.)  
+- Text: Koroglu epic translations as content source  
+- MVP next step from proposal: **one combat sequence**, **2 AI agent types (ally/enemy)**, **basic terrain**  
+- Do not assume GPT-3.5-only; pick a current dialogue model, but keep cloud-AI cost conscious  
+
+## Decision rule
+
+When features conflict, prioritize: cultural authenticity → playable combat/AI loop → generative narrative → polish.
