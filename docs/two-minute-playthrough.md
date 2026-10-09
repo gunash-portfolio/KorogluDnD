@@ -37,7 +37,8 @@ Record the live game. Do not pause on menus after the first two character cards.
 
 ## 1:45–2:00 — Çamlıbel
 
-- Ride the fortress gate (turns green after the captain falls).
-- End on the embrace still, then the Çamlıbel victory lines.
+- Ride the fortress gate (turns green after the last riders fall).
+- End on the embrace still. Click Speak with Nigar. Finish her love words.
+- Close on the **Good ending** card: Çamlıbel is a home, not a throne.
 
 After the two opening cards the game rides itself (father → ashik heal → Ayvaz → verse and saber on the captain) until you click. Use that auto-ride for a short clip; use the full timing above for the two-minute cut.
