@@ -491,7 +491,19 @@ const GATE_LOVE = {
     together: {
       who: "At the gate",
       line: "They hold each other in the last light. Love is not weakness in a champion. The dastan remembers saber — and this quiet.",
-      choices: [{ t: "Close the tale.", next: null, done: true }],
+      choices: [{ t: "Hear Nigar’s last word.", next: "good" }],
+    },
+    good: {
+      who: "Nigar — Good ending",
+      line: "Then hear me, Koroglu: I am not a prize you won. I am the woman who chooses you. Kiss me at the green gate. Let Çamlıbel feed the hungry, and let the valley live without fear.",
+      choices: [
+        { t: "I love you. The keep is a home. This is our good ending.", next: "close", goodEnd: true },
+      ],
+    },
+    close: {
+      who: "Koroglu",
+      line: "Equal at the gate — saber, verse, and you. The ashik will write both: justice for the poor, and this love. Çamlıbel is a home again.",
+      choices: [{ t: "Close the tale.", next: null, done: true, goodEnd: true }],
     },
   },
 };
@@ -523,6 +535,8 @@ function createState() {
     talked: {},
     loveTalk: false,
     loveNode: "nigar1",
+    goodEnding: false,
+    goodEndingShown: false,
     justice: 0,
     revenge: 0,
     flags: {},
@@ -580,6 +594,12 @@ document.getElementById("restart").onclick = () => {
   closeGateLove();
   banner.classList.remove("show");
   outroEl.classList.remove("show");
+  if (outroName) outroName.textContent = "Çamlıbel is a home again";
+  if (outroText) {
+    outroText.style.display = "";
+    outroText.textContent =
+      "Nigar is free. Speak with her at the gate. Love is not a trophy: if you answer her as an equal, the tale closes on a good ending — Çamlıbel as a home, not a throne.";
+  }
   story.textContent = OPENING;
   setChapter("Episode I — Tax riders of Bolu Bey");
   setEnemyLabel();
@@ -603,6 +623,13 @@ function setEnemyLabel() {
 }
 
 function showWinBanner() {
+  if (state.goodEnding) {
+    bannerTitle.textContent = "Good ending";
+    bannerText.textContent =
+      "Nigar spoke her love at the green gate. Koroglu answered as her equal, not her captor. Çamlıbel is a home. The dastan remembers saber, verse, and this quiet.";
+    banner.classList.add("show");
+    return;
+  }
   const just = (state.justice || 0) >= (state.revenge || 0);
   bannerTitle.textContent = just ? "Justice rides at Çamlıbel" : "The keep is taken";
   bannerText.textContent = just
@@ -707,6 +734,7 @@ function nearestTalkId() {
   return best;
 }
 
+const outroName = document.getElementById("outroName");
 const outroText = document.getElementById("outroText");
 const outroTalk = document.getElementById("outroTalk");
 const outroWho = document.getElementById("outroWho");
@@ -719,9 +747,10 @@ function closeGateLove() {
   state.loveNode = GATE_LOVE.start;
   if (outroTalk) outroTalk.classList.remove("show");
   if (outroText) outroText.style.display = "";
+  if (outroName) outroName.textContent = "Çamlıbel is a home again";
   if (outroContinue) {
     outroContinue.style.display = "";
-    outroContinue.textContent = "Speak with Nigar";
+    outroContinue.textContent = state.goodEndingShown ? "Close the tale" : "Speak with Nigar";
   }
 }
 
@@ -747,6 +776,7 @@ function renderGateLove() {
 }
 
 function pickGateLove(c) {
+  if (c.goodEnd) state.goodEnding = true;
   if (c.done || c.next == null) {
     finishGateLove();
     return;
@@ -755,13 +785,34 @@ function pickGateLove(c) {
   renderGateLove();
 }
 
+function showGoodEndingCard() {
+  state.goodEnding = true;
+  state.goodEndingShown = true;
+  state.loveTalk = false;
+  if (outroTalk) outroTalk.classList.remove("show");
+  if (outroName) outroName.textContent = "Good ending";
+  if (outroText) {
+    outroText.style.display = "";
+    outroText.textContent =
+      "Nigar speaks at the green gate. Koroglu answers as her equal — not her captor. Love and justice close the dastan together. Çamlıbel is a home again.";
+  }
+  if (outroContinue) {
+    outroContinue.style.display = "";
+    outroContinue.textContent = "Close the tale";
+  }
+}
+
 function finishGateLove() {
-  closeGateLove();
-  outroEl.classList.remove("show");
-  showWinBanner();
+  showGoodEndingCard();
 }
 
 outroContinue.onclick = () => {
+  if (state.goodEndingShown) {
+    closeGateLove();
+    outroEl.classList.remove("show");
+    showWinBanner();
+    return;
+  }
   state.loveTalk = true;
   state.loveNode = GATE_LOVE.start;
   renderGateLove();
@@ -771,6 +822,7 @@ function endGame(win) {
   state.over = true;
   state.win = win;
   if (win) {
+    state.goodEndingShown = false;
     closeGateLove();
     outroArt.style.animation = "none";
     void outroArt.offsetWidth;
