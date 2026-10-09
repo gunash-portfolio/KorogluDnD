@@ -45,10 +45,11 @@ function bindKey(e, on) {
   if (map[code] || name === " ") e.preventDefault();
 }
 window.addEventListener("keydown", (e) => {
-  if (state && state.talking) {
+  if (state && (state.talking || state.loveTalk)) {
     const n = { Digit1: 0, Digit2: 1, Digit3: 2 }[e.code];
     if (n != null) {
-      const btn = document.querySelectorAll("#talkChoices button")[n];
+      const sel = state.loveTalk ? "#outroChoices button" : "#talkChoices button";
+      const btn = document.querySelectorAll(sel)[n];
       if (btn) {
         e.preventDefault();
         btn.click();
@@ -457,6 +458,44 @@ const DIALOGUES = {
   },
 };
 
+const GATE_LOVE = {
+  start: "nigar1",
+  nodes: {
+    nigar1: {
+      who: "Nigar",
+      line: "Koroglu — I heard Kırat before I saw your face. Hold me. The cage is gone, and I will not spend this hour as a trophy.",
+      choices: [
+        { t: "I rode for you. The keep can wait a breath.", next: "koro1" },
+        { t: "Your name was a verse I would not let die.", next: "koro1" },
+        { t: "Stay against my heart. Steel is done.", next: "koro2" },
+      ],
+    },
+    koro1: {
+      who: "Koroglu",
+      line: "I am still the son of the blind — yet my eyes found you. If Çamlıbel is a home, it is because you walk in it.",
+      choices: [{ t: "Nigar, walk the valley with me as my equal.", next: "nigar2" }],
+    },
+    koro2: {
+      who: "Koroglu",
+      line: "Then let Bolu’s drums go quiet. I wanted justice — and I wanted you. Both, or the dastan is a lie.",
+      choices: [{ t: "Say you choose me, not the rescue.", next: "nigar2" }],
+    },
+    nigar2: {
+      who: "Nigar",
+      line: "I choose you — not as a rescued prize, but as a woman who loves a just man. Kiss me at the green gate, and let the valley hear it.",
+      choices: [
+        { t: "Then this keep is ours: a home, not a throne.", next: "together" },
+        { t: "I love you, Nigar. Let the ashik write that verse too.", next: "together" },
+      ],
+    },
+    together: {
+      who: "At the gate",
+      line: "They hold each other in the last light. Love is not weakness in a champion. The dastan remembers saber — and this quiet.",
+      choices: [{ t: "Close the tale.", next: null, done: true }],
+    },
+  },
+};
+
 const sword = new THREE.Mesh(
   new THREE.BoxGeometry(0.12, 0.12, 1.3),
   new THREE.MeshLambertMaterial({ color: 0xc0c8d0, metalness: 0.7, roughness: 0.3 })
@@ -482,6 +521,8 @@ function createState() {
     talking: null,
     talkNode: "start",
     talked: {},
+    loveTalk: false,
+    loveNode: "nigar1",
     justice: 0,
     revenge: 0,
     flags: {},
@@ -536,6 +577,7 @@ document.getElementById("restart").onclick = () => {
   place(remnant2Mesh, SPAWN.remnant2);
   remnant2Mesh.visible = false;
   closeTalk();
+  closeGateLove();
   banner.classList.remove("show");
   outroEl.classList.remove("show");
   story.textContent = OPENING;
@@ -665,15 +707,71 @@ function nearestTalkId() {
   return best;
 }
 
-document.getElementById("outroContinue").onclick = () => {
+const outroText = document.getElementById("outroText");
+const outroTalk = document.getElementById("outroTalk");
+const outroWho = document.getElementById("outroWho");
+const outroLine = document.getElementById("outroLine");
+const outroChoices = document.getElementById("outroChoices");
+const outroContinue = document.getElementById("outroContinue");
+
+function closeGateLove() {
+  state.loveTalk = false;
+  state.loveNode = GATE_LOVE.start;
+  if (outroTalk) outroTalk.classList.remove("show");
+  if (outroText) outroText.style.display = "";
+  if (outroContinue) {
+    outroContinue.style.display = "";
+    outroContinue.textContent = "Speak with Nigar";
+  }
+}
+
+function renderGateLove() {
+  const node = GATE_LOVE.nodes[state.loveNode];
+  if (!node || !outroTalk) {
+    finishGateLove();
+    return;
+  }
+  if (outroText) outroText.style.display = "none";
+  if (outroContinue) outroContinue.style.display = "none";
+  outroWho.textContent = node.who;
+  outroLine.textContent = node.line;
+  outroChoices.innerHTML = "";
+  node.choices.forEach((c, i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = `${i + 1}. ${c.t}`;
+    b.onclick = () => pickGateLove(c);
+    outroChoices.appendChild(b);
+  });
+  outroTalk.classList.add("show");
+}
+
+function pickGateLove(c) {
+  if (c.done || c.next == null) {
+    finishGateLove();
+    return;
+  }
+  state.loveNode = c.next;
+  renderGateLove();
+}
+
+function finishGateLove() {
+  closeGateLove();
   outroEl.classList.remove("show");
   showWinBanner();
+}
+
+outroContinue.onclick = () => {
+  state.loveTalk = true;
+  state.loveNode = GATE_LOVE.start;
+  renderGateLove();
 };
 
 function endGame(win) {
   state.over = true;
   state.win = win;
   if (win) {
+    closeGateLove();
     outroArt.style.animation = "none";
     void outroArt.offsetWidth;
     outroArt.style.animation = "outroIn 1.6s ease both";
@@ -1404,3 +1502,8 @@ setInterval(() => {
 window.addEventListener("resize", drawMap);
 drawMap();
 animate(performance.now());
+
+if (new URLSearchParams(location.search).has("ending")) {
+  closeIntro();
+  endGame(true);
+}
